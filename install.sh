@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# yh-agent 安装脚本
+# agent-default 安装脚本
 # 用法：在项目根目录执行
 # curl -fsSL https://raw.githubusercontent.com/valiantyan/agent-default/main/install.sh | bash
 

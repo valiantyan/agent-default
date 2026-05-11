@@ -2,11 +2,11 @@
 
 ## 热层（每次必读，按顺序）
 
-1. `/Users/yanhao/yh-agent/identity.md`
-2. `/Users/yanhao/yh-agent/soul.md`
-3. `/Users/yanhao/yh-agent/user.md`
-4. `/Users/yanhao/yh-agent/core-rules.md`
-5. `/Users/yanhao/yh-agent/memory/MEMORY.md`（只读 Summary for Agent 区块）
+1. `agent-default/identity.md`
+2. `agent-default/soul.md`
+3. `agent-default/user.md`
+4. `agent-default/core-rules.md`
+5. `agent-default/memory/MEMORY.md`（只读 Summary for Agent 区块）
 
 读完直接等待指令，不做汇报。
 
@@ -14,7 +14,7 @@
 
 ## 会话结束
 
-静默更新 `/Users/yanhao/yh-agent/memory/MEMORY.md`：
+静默更新 `agent-default/memory/MEMORY.md`：
 
 **更新 Summary for Agent（必须保持在前 200 行内）**：
 - 当前项目阶段（一句话更新）
@@ -33,7 +33,7 @@
 
 ## 错误记录
 
-以下情况判断是否静默写入 `/Users/yanhao/yh-agent/regression.md`：
+以下情况判断是否静默写入 `agent-default/regression.md`：
 1. 用户明确否定纠正（"不对"、"你搞错了"等）
 2. 用户推翻刚输出的方案
 3. 用户说"换个方向"、"重新来"

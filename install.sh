@@ -67,6 +67,28 @@ else
     generate_claude
 fi
 
+# ── .gitignore 处理 ───────────────────────────────────
+GITIGNORE_FILE="$(pwd)/.gitignore"
+GITIGNORE_ENTRY="agent-default/"
+
+add_to_gitignore() {
+    echo "" >> "${GITIGNORE_FILE}"
+    echo "# yh-agent 规则目录（本地私有，不提交）" >> "${GITIGNORE_FILE}"
+    echo "${GITIGNORE_ENTRY}" >> "${GITIGNORE_FILE}"
+    info "✓ .gitignore 已添加 agent-default/"
+}
+
+if [ -f "${GITIGNORE_FILE}" ]; then
+    if grep -qx "${GITIGNORE_ENTRY}" "${GITIGNORE_FILE}"; then
+        warn "~ .gitignore 已包含 agent-default/，跳过"
+    else
+        add_to_gitignore
+    fi
+else
+    # 项目没有 .gitignore，不创建，只提示
+    warn "未检测到 .gitignore，请手动添加 agent-default/ 以避免提交到 git"
+fi
+
 echo ""
 info "完成 🎉"
 echo ""

@@ -27,7 +27,7 @@ fi
 
 mkdir -p "${AGENT_DIR}/memory/sessions"
 
-# 每次覆盖的基础文件
+# 每次覆盖的基础文件（不含 README.md）
 for file in identity.md soul.md core-rules.md regression.md memory/sessions/README.md; do
     curl -fsSL "${BASE_URL}/${file}" -o "${AGENT_DIR}/${file}"
     info "✓ agent-default/${file}"
@@ -49,22 +49,25 @@ else
     warn "~ agent-default/memory/MEMORY.md 已存在，跳过"
 fi
 
-# CLAUDE.md 写入项目根目录，使用相对路径
+# ── CLAUDE.md 处理 ────────────────────────────────────
 CLAUDE_FILE="$(pwd)/CLAUDE.md"
-
-generate_claude() {
-    curl -fsSL "${BASE_URL}/CLAUDE.md" \
-        | sed 's|/Users/yanhao/yh-agent|agent-default|g' \
-        > "${CLAUDE_FILE}"
-    info "✓ CLAUDE.md（路径已设为相对路径 agent-default/）"
-}
+CLAUDE_CONTENT=$(curl -fsSL "${BASE_URL}/CLAUDE.md" \
+    | sed 's|/Users/yanhao/yh-agent|agent-default|g')
 
 if [ -f "${CLAUDE_FILE}" ]; then
-    warn "检测到已有 CLAUDE.md"
-    read -r -p "  覆盖？[y/N] " confirm_claude
-    [[ "$confirm_claude" =~ ^[Yy]$ ]] && generate_claude || warn "~ CLAUDE.md 保留原有内容"
+    # 已有 CLAUDE.md：检查是否已包含 agent-default 内容，避免重复追加
+    if grep -q "agent-default/identity.md" "${CLAUDE_FILE}"; then
+        warn "~ CLAUDE.md 已包含 agent-default 规则，跳过"
+    else
+        echo "" >> "${CLAUDE_FILE}"
+        echo "---" >> "${CLAUDE_FILE}"
+        echo "" >> "${CLAUDE_FILE}"
+        echo "${CLAUDE_CONTENT}" >> "${CLAUDE_FILE}"
+        info "✓ CLAUDE.md 已追加 agent-default 规则"
+    fi
 else
-    generate_claude
+    echo "${CLAUDE_CONTENT}" > "${CLAUDE_FILE}"
+    info "✓ CLAUDE.md（首次创建）"
 fi
 
 # ── .gitignore 处理 ───────────────────────────────────
@@ -73,7 +76,7 @@ GITIGNORE_ENTRY="agent-default/"
 
 add_to_gitignore() {
     echo "" >> "${GITIGNORE_FILE}"
-    echo "# yh-agent 规则目录（本地私有，不提交）" >> "${GITIGNORE_FILE}"
+    echo "# agent-default 规则目录（本地私有，不提交）" >> "${GITIGNORE_FILE}"
     echo "${GITIGNORE_ENTRY}" >> "${GITIGNORE_FILE}"
     info "✓ .gitignore 已添加 agent-default/"
 }
@@ -85,7 +88,6 @@ if [ -f "${GITIGNORE_FILE}" ]; then
         add_to_gitignore
     fi
 else
-    # 项目没有 .gitignore，不创建，只提示
     warn "未检测到 .gitignore，请手动添加 agent-default/ 以避免提交到 git"
 fi
 
